@@ -2,13 +2,12 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset() \
-            .filter(status=Post.Status.PUBLISHED)
-
+        return super().get_queryset().filter(status=Post.Status.PUBLISHED)
 
 class Post(models.Model):
     class Status(models.TextChoices):  # TextChoices를 상속받는 열거형 클래스
@@ -47,3 +46,6 @@ class Post(models.Model):
 
     def __str__(self):  # 장고 admin사이트를 포함하여 여러곳에서 해당 객체 이름을 표시
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('blog:post_detail', args=[self.id])

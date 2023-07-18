@@ -19,6 +19,6 @@ from django.urls import path, include
 
 # include로 app 추가
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('blog/', include('blog.urls', namespace='blog')),
+    path("admin/", admin.site.urls),
+    path("blog/", include('blog.urls', namespace='blog')),
 ]

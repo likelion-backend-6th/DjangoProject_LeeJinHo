@@ -6,8 +6,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def post_list(request):
+    per_page = request.GET.get('per_page', 3)
     post_list = Post.published.all()
-    paginator = Paginator(post_list, 3) # 페이지당 3개의 게시물로 페이지네이션
+    #paginator = Paginator(post_list, 3) # 페이지당 3개의 게시물로 페이지네이션
+    paginator = Paginator(post_list, per_page, orphans=1)
     page_number = request.GET.get('page')
     try:
         posts = paginator.page(page_number)

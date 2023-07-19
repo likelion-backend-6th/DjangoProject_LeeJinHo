@@ -9,6 +9,7 @@ class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=Post.Status.PUBLISHED)
 
+
 class Post(models.Model):
     class Status(models.TextChoices):  # TextChoices를 상속받는 열거형 클래스
         DRAFT = 'DF', 'Draft'  # 게시물 상태 : 임시
@@ -16,7 +17,7 @@ class Post(models.Model):
 
     # id = 자동생성(BigAutoField)
     title = models.CharField(max_length=250)  # 글의 제목을 위한 필드, SQL에서 VARCHAR열로 변환
-    slug = models.SlugField(max_length=250, # SlugField필드, 문자,숫자,밑줄,하이픈만 포함하는 짧은 레이블, SEO친화적인 URL구성
+    slug = models.SlugField(max_length=250,  # SlugField필드, 문자,숫자,밑줄,하이픈만 포함하는 짧은 레이블, SEO친화적인 URL구성
                             unique_for_date='publish')
 
     author = models.ForeignKey(  # 장고가 관련모델의 기본키를 사용하여 데이터베이스에서 외래키를 생성함
@@ -49,4 +50,9 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('blog:post_detail', args=[self.id])
+        #정규 URL의 매개변수도 수정.
+        return reverse('blog:post_detail',
+                       args=[self.publish.year,
+                             self.publish.month,
+                             self.publish.day,
+                             self.slug])

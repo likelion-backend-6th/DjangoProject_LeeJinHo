@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 
+from .forms import EmailPostForm
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -39,5 +40,19 @@ def post_detail(request, year, month, day, post):
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
-
     return render(request, 'blog/post/detail.html', {'post': post})
+
+
+def post_share(request, post_id):
+    # id로 글 검색
+    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
+    if request.method == 'POST':
+        # 폼이 제출되었습니다.
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            # 폼 필드가 유효한 경우
+            cd = form.cleaned_data #유효성 검사된 데이터 검색
+            # ... 이메일 전송
+    else: #폼이 유효하지 않음
+        form = EmailPostForm()
+    return render(request, 'blog/post/share.html', {'post': post, 'form': form})

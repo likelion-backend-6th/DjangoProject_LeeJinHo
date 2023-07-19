@@ -13,6 +13,5 @@
         </p>
         {{ post.body|truncatewords:30|linebreaks }}
     {% endfor %}
-    <!--장고의 ListView 제네릭뷰는 요청된 페이지를 page_obj란 변수로 전달함 -->
     {% include "pagination.html" with page=post_obj %}
 {% endblock content %}

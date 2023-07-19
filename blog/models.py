@@ -17,8 +17,7 @@ class Post(models.Model):
 
     # id = 자동생성(BigAutoField)
     title = models.CharField(max_length=250)  # 글의 제목을 위한 필드, SQL에서 VARCHAR열로 변환
-    slug = models.SlugField(max_length=250,  # SlugField필드, 문자,숫자,밑줄,하이픈만 포함하는 짧은 레이블, SEO친화적인 URL구성
-                            unique_for_date='publish')
+    slug = models.SlugField(max_length=250, unique_for_date='publish', allow_unicode=True)# SlugField필드, 문자,숫자,밑줄,하이픈만 포함하는 짧은 레이블, SEO친화적인 URL구성
 
     author = models.ForeignKey(  # 장고가 관련모델의 기본키를 사용하여 데이터베이스에서 외래키를 생성함
         User,  # import한 User모델, M:1 관계, 사용자는 여러글을 작성한다
@@ -51,8 +50,7 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         #정규 URL의 매개변수도 수정.
-        return reverse('blog:post_detail',
-                       args=[self.publish.year,
-                             self.publish.month,
-                             self.publish.day,
-                             self.slug])
+        return reverse('blog:post_detail', args=[self.publish.year,
+                                                 self.publish.month,
+                                                 self.publish.day,
+                                                 self.slug])

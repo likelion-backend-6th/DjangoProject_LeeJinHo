@@ -9,4 +9,7 @@ urlpatterns = [
     re_path(r'^(?P<year>[0-9]{4})/(?P<month>[0-9]{1,2})/(?P<day>[0-9]{1,2})/(?P<post>[-\w]+)/$', views.post_detail,
             name='post_detail'),
     path('<int:post_id>/share/', views.post_share, name='post_share'),
+
+#5. URL패턴 생성
+    path('<int:post_id>/comment/', views.post_comment, name='post_comment'),
 ]

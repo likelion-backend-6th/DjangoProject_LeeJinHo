@@ -1,9 +1,10 @@
 # 어플리케이션의 로직이 들어갑니다.각 뷰는 HTTP요청을 받아 처리하고 응답을 반환
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 
-from .forms import EmailPostForm
+from .forms import EmailPostForm, CommentForm
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -63,3 +64,17 @@ def post_share(request, post_id):
     else:
         form = EmailPostForm()
     return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'sent': sent, })
+
+
+#4. 뷰에서 ModelForm 처리
+@require_POST #데코레이터를 사용해 POST요청만 허용하도록 설정함
+def post_comment(request, post_id): #requet객체와 post_id를 매개변수로 받음 이 뷰를 사용하여 댓글 제출 관리
+    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED) #PUBLISHED인 게시물을 가져옴
+    comment = None #이 변수는 댓글 객체를 저장
+    form = CommentForm(data=request.POST)
+    if form.is_valid(): #유효성검사
+        comment = form.save(comment=False) #댓글 객체 생성(데이터 베이스 저장X, 저장전 수정가능)
+        comment.post = post #댓글을 게시물에 할당
+        comment.save() #댓글을 데이터베이스에 저장
+    return render(request, 'blog/post/comment.html', #탬플릿 랜더링
+                  {'post': post, 'form': form, 'comment': comment}) #객체를 템플릿 컨텍스트로 전달

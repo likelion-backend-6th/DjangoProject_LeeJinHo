@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import dotenv
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,8 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRETKEY')
+SECRET_KEY = os.getenv('SECRETKEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -44,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',  # 메시징 프레임워크
     'django.contrib.staticfiles',  # 정적파일 관리를 위한 프레임워크
     # 여기까지 기본적인 장고 어플리케이션 / 여기서부터 추가된 본인의 장고 어플리케이션
-    'blog.apps.BlogConfig', #blog 어플리케이션 활성화
+    'blog.apps.BlogConfig',  # blog 어플리케이션 활성화
 ]
 
 # 실행할 미들웨어를 포함하는 목록
@@ -129,9 +131,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#이메일 서버 구성
+# 이메일 서버 구성
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('email')
-EMAIL_HOST_PASSWORD = os.environ.get('password')
+EMAIL_HOST_USER = os.getenv('email')
+EMAIL_HOST_PASSWORD = os.getenv('password')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

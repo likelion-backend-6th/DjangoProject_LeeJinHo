@@ -54,3 +54,23 @@ class Post(models.Model):
                                                  self.publish.month,
                                                  self.publish.day,
                                                  self.slug])
+
+
+#1. 댓글 모델 생성, 이후 마이그레이션
+class Comment(models.Model):
+    post = models.ForeignKey(Post, #게시물과 댓글을 연결하기 위한 외래키
+                             on_delete=models.CASCADE,
+                             related_name='comments') #related_name으로 연결된 객체로부터 이 객체로의 관계에 대한 속성 이름을 지정
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True) #생성시 날짜 add
+    updated = models.DateTimeField(auto_now=True) #auto_now를 사용하여 객체 저장시 update
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['created']
+        indexes = [models.Index(fields=['created']),]
+
+    def __str__(self):
+        return f'Comment by {self.name} on {self.post}'

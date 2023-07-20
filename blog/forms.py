@@ -9,7 +9,7 @@ class EmailPostForm(forms.Form):
     comments = forms.CharField(required=False, widget=forms.Textarea)  # 글 추천 이메일 코멘트
 
 
-#3. 폼 생성
+#3. 모델 폼 생성
 class CommentForm(forms.ModelForm):
     class Meta: #모델로부터 폼을 생성하기 위해, 폼의 Meta클래스에서 어떤 모델을 사용할지 지정
         model = Comment

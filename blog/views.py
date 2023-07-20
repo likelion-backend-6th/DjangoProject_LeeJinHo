@@ -7,6 +7,8 @@ from django.views.generic import ListView
 from .forms import EmailPostForm, CommentForm
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from taggit.models import Tag
+from django.db.models import Count
 
 
 class PostListView(ListView):
@@ -18,21 +20,25 @@ class PostListView(ListView):
 
 
 # Create your views here.
-def post_list(request):
-    per_page = request.GET.get('per_page', 3)
-    post_list = Post.published.all()
-    # paginator = Paginator(post_list, 3) # 페이지당 3개의 게시물로 페이지네이션
+def post_list(request, tag_slug=None):
+    per_page = request.GET.get('per_page', 3)  # per_page가 없으면 3을 가져옴(동적으로 우선은 3개를 가져오게함)
+    page_number = request.GET.get('page', 1)  # page_number가 없으면 1을 가져옴
+    post_list = Post.published.all()  # published인 글들만 모두 가져옴
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)  # slug가 없으면 404
+        post_list = post_list.filter(tags__in=[tag])
+
+    # 페이지네이터 클래스로 객체 생성
     paginator = Paginator(post_list, per_page, orphans=1)
-    page_number = request.GET.get('page')
+
     try:
         posts = paginator.page(page_number)
     except PageNotAnInteger:
-        # page_number가 정수가 아닌 경우 첫 번째 페이지 제공
         posts = paginator.page(1)
     except EmptyPage:
-        # page_number가 범위를 벗어난 경우 결과의 마지막 페이지 제공
         posts = paginator.page(paginator.num_pages)
-    return render(request, 'blog/post/list.html', {'posts': posts})
+    return render(request, 'blog/post/list.html', {'posts': posts, 'tag': tag})
 
 
 def post_detail(request, year, month, day, post):
@@ -42,19 +48,29 @@ def post_detail(request, year, month, day, post):
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
+
     comments = post.comments.filter(active=True)  # 쿼리셋 추가, 해당포스트의 활성 댓글을 가져오기 위해
-                                                  # Comment 모델에 직접 구축하는 대신 post객체를 활용해 관련 Comment 객체를 가져옴
+    # Comment 모델에 직접 구축하는 대신 post객체를 활용해 관련 Comment 객체를 가져옴
     form = CommentForm()  # 댓글 폼 인스턴스 생성
-    return render(request, 'blog/post/detail.html', {'post': post,
-                                                     'comments': comments,
-                                                     'form': form})
+
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
+
+    return render(request,
+                  'blog/post/detail.html',
+                  {'post': post,
+                   'comments': comments,
+                   'form': form,
+                   'similar_posts': similar_posts})
 
 
 def post_share(request, post_id):
-    # id로 게시물 조회
+    # id로 게시글 조회
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
     sent = False
     if request.method == 'POST':
+        form = EmailPostForm(request.POST)
         # 폼이 제출되었을 때
         form = EmailPostForm(request.POST)
         if form.is_valid():
@@ -68,7 +84,7 @@ def post_share(request, post_id):
         sent = True
     else:
         form = EmailPostForm()
-    return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'sent': sent, })
+    return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'sent': sent})
 
 
 # 4. 뷰에서 ModelForm 처리

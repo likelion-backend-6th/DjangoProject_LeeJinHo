@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',  # 정적파일 관리를 위한 프레임워크
     # 여기까지 기본적인 장고 어플리케이션 / 여기서부터 추가된 본인의 장고 어플리케이션
     'blog.apps.BlogConfig',  # blog 어플리케이션 활성화
+    'taggit',
 ]
 
 # 실행할 미들웨어를 포함하는 목록

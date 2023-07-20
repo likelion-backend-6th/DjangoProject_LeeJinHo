@@ -13,6 +13,14 @@
             게시글 공유
         </a>
     </p>
+    <h2>비슷한 글</h2>
+    {% for post in similar_posts %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        비슷한 글이 없습니다
+    {% endfor %}
     {% with comments.count as total_comments %} <!--댓글수 표시-->
         <h2>
             {{ total_comments }} comment {{ total_comments|pluralize }}

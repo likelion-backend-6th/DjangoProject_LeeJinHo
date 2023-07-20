@@ -1,3 +1,4 @@
+{% load blog_tags %}
 {% load static %}
 
 <!doctype html>
@@ -16,8 +17,12 @@
     {% endblock content %}
 </div>
 <div id="sidebar">
-    <h2>My blog</h2>
-    <p>this is my blog.</p>
+    <h2>Django Blog by jh</h2>
+    <p>
+        {% total_posts %}개의 글이 기록되어 있어요
+    </p>
+    <h3>최근에 올라온 글</h3>
+    {% show_latest_posts 3 %}
 </div>
 </body>
 </html>

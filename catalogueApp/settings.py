@@ -16,6 +16,8 @@ import os
 
 load_dotenv()
 
+SITE_ID = 1
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     # 여기까지 기본적인 장고 어플리케이션 / 여기서부터 추가된 본인의 장고 어플리케이션
     'blog.apps.BlogConfig',  # blog 어플리케이션 활성화
     'taggit',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 # 실행할 미들웨어를 포함하는 목록

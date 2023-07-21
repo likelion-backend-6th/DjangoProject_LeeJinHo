@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'django.contrib.postgres',
 ]
 
 # 실행할 미들웨어를 포함하는 목록
@@ -92,8 +93,10 @@ WSGI_APPLICATION = 'catalogueApp.wsgi.application'
 # 사용할 모든 데이터베이스의 설정을 포함하는 딕셔너리
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blog',
+        'USER': 'blog',
+        'PASSWORD': '4444',
     }
 }
 

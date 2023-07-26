@@ -9,8 +9,13 @@ class EmailPostForm(forms.Form):
     comments = forms.CharField(required=False, widget=forms.Textarea)  # 글 추천 이메일 코멘트
 
 
-#3. 모델 폼 생성
+# 3. 모델 폼 생성
 class CommentForm(forms.ModelForm):
-    class Meta: #모델로부터 폼을 생성하기 위해, 폼의 Meta클래스에서 어떤 모델을 사용할지 지정
+    class Meta:  # 모델로부터 폼을 생성하기 위해, 폼의 Meta클래스에서 어떤 모델을 사용할지 지정
         model = Comment
-        fields = ['name', 'email', 'body'] #폼에 포함되는 필드 3개
+        fields = ['name', 'email', 'body']  # 폼에 포함되는 필드 3개
+
+
+# 검색 뷰 만들기. 폼 생성
+class SearchForm(forms.Form):
+    query = forms.CharField()

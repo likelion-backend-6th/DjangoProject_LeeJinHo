@@ -91,6 +91,21 @@ WSGI_APPLICATION = 'catalogueApp.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # 사용할 모든 데이터베이스의 설정을 포함하는 딕셔너리
+
+#Postgres 데이터베이스 생성하기
+#pip install psycopg2
+#psql -u postgres template1
+#CREATE USER blog With PASSWORD '4444'
+#CREATE DATABASE blog OWNER blog ENCODING 'UTF8';
+#이제 데이터 내보내기
+#python manage.py dumpdata --indent=2 --output=mysite_data.json
+#python -Xutf8 manage.py dumpdata --indent=2 --output=mysite_data.json
+#이제 프로젝트에서 데이터베이스 변경하기
+#setting.py에 databases 수정
+#마이그레이션
+#python manage.py loaddata mysite_data.json
+#이후 서버 시작
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
